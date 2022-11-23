@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
 import { useNavigate } from "react-router-dom"
-import AuthService from "../src/services/auth.service";
-import { AuthContext } from "../src/app/contexts/AuthProvider";
+import AuthService from "../services/auth.service";
+import { AuthContext } from "../app/contexts/AuthProvider";
 
 
 const useAuth = (process) => {
