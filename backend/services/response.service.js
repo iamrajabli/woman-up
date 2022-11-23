@@ -7,7 +7,7 @@ module.exports = class ResponseService {
         const { JWT_ACCESS_SECRET } = process.env;
 
         const accessToken = jwt.sign({ ...userData }, JWT_ACCESS_SECRET, {
-            expiresIn: '20m'
+            expiresIn: '200m'
         });
 
         res

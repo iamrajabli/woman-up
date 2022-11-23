@@ -29,7 +29,7 @@ class TodoController {
 
     tasks = catchAsyncErrors(async (req, res, next) => {
         try {
-            
+
             const todos = await TodoModel.find({ user: req.user.id });
 
             ResponseService.createResponse(res, { todos })
@@ -93,11 +93,12 @@ class TodoController {
                 return next(new HttpError('У вас нет прав на изменение этой задачи', 401))
             }
 
-            const { title, description, deadline } = req.body;
+            const { title, description, deadline, status } = req.body;
 
             todo.title = title;
             todo.description = description;
             todo.deadline = deadline;
+            todo.status = status;
             await todo.save();
 
             ResponseService.createResponse(res, { todo })
@@ -107,6 +108,33 @@ class TodoController {
         }
 
     })
+
+    expire = catchAsyncErrors(async (req, res, next) => {
+
+        try {
+
+            const { id } = req.params;
+
+            const todo = await TodoModel.findById(id);
+
+            if (!todo) {
+                return next(new HttpError('Задание не найдено', 404))
+            }
+
+            if (todo.user !== req.user.id) {
+                return next(new HttpError('У вас нет прав на изменение этой задачи', 401))
+            }
+
+            todo.status = 'expired';
+            await todo.save();
+
+            ResponseService.createResponse(res, { todo })
+
+        } catch (e) {
+            next(e);
+        }
+    })
+
 }
 
 

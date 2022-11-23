@@ -1,10 +1,13 @@
 import Routers from "./routers/Routers";
 
 import AuthProvider from "./app/contexts/AuthProvider";
+import TodosProvider from "./app/contexts/TodosProvider";
 
 const App = () => (
     <AuthProvider>
-        <Routers />
+        <TodosProvider>
+            <Routers />
+        </TodosProvider>
     </AuthProvider>
 )
 

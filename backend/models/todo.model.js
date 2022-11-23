@@ -11,13 +11,18 @@ const todoSchema = new Schema({
 
     description: {
         type: String,
-        minlength: [10, 'Описание должен быть не менее 3 символов.'],
+        minlength: [10, 'Описание должен быть не менее 10 символов.'],
         required: [true, "Пожалуйста, введите сведения о задаче."]
     },
 
     deadline: {
         type: Date,
         required: [true, "Пожалуйста, укажите срок выполнения задания."]
+    },
+    status: {
+        type: String,
+        enum: ['in_process', 'done', 'expired'],
+        default: 'in_process'
     },
 
     user: {
