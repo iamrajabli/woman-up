@@ -29,7 +29,7 @@ class TodoController {
 
     tasks = catchAsyncErrors(async (req, res, next) => {
         try {
-
+            
             const todos = await TodoModel.find({ user: req.user.id });
 
             ResponseService.createResponse(res, { todos })

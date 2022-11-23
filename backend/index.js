@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const logger = require('./services/logger.service');
-
+const cors = require('cors');
 
 // Assign app and port
 const app = express();
@@ -11,6 +11,7 @@ const port = process.env.PORT || 5000;
 // Middlewares
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors())
 
 
 // Routes

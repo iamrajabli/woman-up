@@ -19,7 +19,7 @@ class AuthController {
 
             // Отправить ошибку если пользователь уже существует
             if (user) {
-                throw new HttpError(404, 'Электронная почта уже есть в системе')
+                throw new HttpError(404, 'Электронная почта уже есть в системе.')
             }
 
             // Создаем, если такого пользователя нет в базе данных
@@ -50,7 +50,7 @@ class AuthController {
 
             // Возвращаем ошибку, если такого пользователя нет в базе данных
             if (!user) {
-                throw new HttpError(404, 'Email is wrong.')
+                throw new HttpError(404, 'Такого пользователя нет в базе данных')
             }
 
             // Проверка хешированного пароля
@@ -60,7 +60,7 @@ class AuthController {
 
             // Возвращаем ошибку, если пароль неверный
             if (!passMatch) {
-                throw new HttpError(404, 'Pass is wrong.')
+                throw new HttpError(404, 'Не верный логин или пароль.')
             }
 
             // Фильтр пользовательских данных

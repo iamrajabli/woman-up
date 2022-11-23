@@ -5,7 +5,7 @@ const HttpError = require('../errors/http.error');
 module.exports = (req, res, next) => {
     try {
 
-        const { accessToken } = req.cookies;
+        const accessToken = req.headers['x-access-token'].split(' ')[1];
 
         if (!accessToken) {
             throw new HttpError(401, 'Вы должны войти в систему, чтобы просмотреть этот контент.');
@@ -21,7 +21,7 @@ module.exports = (req, res, next) => {
         next();
 
     } catch (e) {
-        next(e)
+        throw new HttpError(401, 'Вы должны войти в систему, чтобы просмотреть этот контент.');
     }
 
 }
