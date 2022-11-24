@@ -1,22 +1,30 @@
 import TodoItem from "./TodoItem";
-import { useMemo, useContext } from "react";
+import { useMemo, useContext, useState } from "react";
 import NotYet from './NotYet';
 import { TodosContext } from "../../../contexts/TodosProvider";
 
 const Todo = () => {
 
-    const { loading, error, todos, } = useContext(TodosContext);
+    const { todos } = useContext(TodosContext);
 
+    const [filter, setFilter] = useState('all');
 
+    // Фильтрация тудушек
     const Content = useMemo(() => {
-        if (todos.length > 0) {
-            return todos.map((todo, index) => {
+
+        let filteredData = filter !== 'all' ? todos.filter(todo => todo.status === filter) : todos
+
+
+        if (filteredData.length > 0) {
+            return filteredData.map((todo, index) => {
                 return <TodoItem key={index} data={todo} />
             })
         } else {
             return <NotYet />
         }
-    }, [todos])
+    }, [todos, filter])
+
+
 
     return (
         <div className="w-[1000px] border border-gray-300 mx-auto p-3">
@@ -25,15 +33,13 @@ const Todo = () => {
             </h1>
             <div className="flex items-center mb-5">
                 <div className="flex gap-3">
-                    <button className='p-3 bg-primaryText text-primaryBg'>Все</button>
-                    <button className='p-3 bg-primaryText text-primaryBg'>Выполненные</button>
-                    <button className='p-3 bg-primaryText text-primaryBg'>Не выполненные</button>
+                    <button onClick={() => setFilter('all')} className='p-3 bg-primaryText text-primaryBg'>Все</button>
+                    <button onClick={() => setFilter('done')} className='p-3 bg-primaryText text-primaryBg'>Выполненные</button>
+                    <button onClick={() => setFilter('expired')} className='p-3 bg-primaryText text-primaryBg'>Не выполненные</button>
                 </div>
             </div>
 
             <div className='flex flex-col gap-5'>
-                {/* {Load}
-                {NotContent} */}
                 {Content}
             </div>
 
@@ -43,15 +49,3 @@ const Todo = () => {
 };
 
 export default Todo;
-
-  // const NotContent = useMemo(() => {
-    //     if (todos.length === 0) {
-    //         return <NotYet />
-    //     }
-    // }, [todos])
-
-    // const Load = useMemo(() => {
-    //     if (loading) {
-    //         return <div className="text-center">Загрузка...</div>
-    //     }
-    // }, [loading, todos])

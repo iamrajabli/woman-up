@@ -25,7 +25,7 @@ const LoginScreen = () => {
                     </h1>
                 </div>
 
-                {error && <Alert text={error} />}
+                {error && <Alert type={'danger'} text={error} />}
 
 
                 <form

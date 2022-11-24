@@ -6,19 +6,37 @@ const TodoModel = require('../models/todo.model');
 
 const HttpError = require('../errors/http.error');
 
+const cloudinary = require('cloudinary').v2;
+
 
 class TodoController {
+
+    // Создать тудушку
     create = catchAsyncErrors(async (req, res, next) => {
         try {
 
             const { title, description, deadline } = req.body;
 
-            const todo = await TodoModel.create({
+            const todoObj = {
                 title,
                 description,
                 deadline,
-                user: req.user.id
-            });
+                user: req.user.userData.id,
+            }
+
+            // если есть файл то добавляем его в объект
+            if (req.body.file) {
+                const result = await cloudinary.uploader.upload(req.body.file, {
+                    folder: 'woman',
+                })
+
+                todoObj.file = {
+                    public_id: result.secure_url,
+                    url: result.secure_url,
+                }
+
+            }
+            const todo = await TodoModel.create(todoObj);
 
             ResponseService.createResponse(res, { todo })
 
@@ -27,11 +45,13 @@ class TodoController {
         }
     })
 
+    // Получить все тудушки
     tasks = catchAsyncErrors(async (req, res, next) => {
         try {
 
-            const todos = await TodoModel.find({ user: req.user.id });
+            const todos = await TodoModel.find({ user: req.user.userData.id });
 
+            // console.log(todos, req.user);
             ResponseService.createResponse(res, { todos })
 
         } catch (e) {
@@ -39,6 +59,7 @@ class TodoController {
         }
     })
 
+    // Удалить определенную тудушку
     remove = catchAsyncErrors(async (req, res, next) => {
         try {
 
@@ -50,7 +71,9 @@ class TodoController {
                 return next(new HttpError('Задание не найдено', 404))
             }
 
-            if (todo.user !== req.user.id) {
+
+
+            if (todo.user.toString() !== req.user.userData.id) {
                 return next(new HttpError('У вас нет прав на удаление этой задачи', 401))
             }
 
@@ -64,19 +87,8 @@ class TodoController {
         }
     })
 
-    removeAll = catchAsyncErrors(async (req, res, next) => {
-        try {
 
-            await TodoModel.deleteMany({ user: req.user.id });
-
-            ResponseService.createResponse(res, { message: 'Задания успешно удалены' })
-
-
-        } catch (e) {
-            next(e);
-        }
-    })
-
+    // обновить тудушку
     update = catchAsyncErrors(async (req, res, next) => {
 
         try {
@@ -89,7 +101,7 @@ class TodoController {
                 return next(new HttpError('Задание не найдено', 404))
             }
 
-            if (todo.user !== req.user.id) {
+            if (todo.user.toString() !== req.user.userData.id) {
                 return next(new HttpError('У вас нет прав на изменение этой задачи', 401))
             }
 
@@ -99,6 +111,22 @@ class TodoController {
             todo.description = description;
             todo.deadline = deadline;
             todo.status = status;
+
+
+            // если есть файл то добавляем его в объект
+            if (req.body.file) {
+
+                const result = await cloudinary.uploader.upload(req.body.file, {
+                    folder: 'woman',
+                })
+
+                todo.file = {
+                    public_id: result.secure_url,
+                    url: result.secure_url,
+                }
+
+            }
+
             await todo.save();
 
             ResponseService.createResponse(res, { todo })
@@ -109,6 +137,7 @@ class TodoController {
 
     })
 
+    // просрочить тудушку
     expire = catchAsyncErrors(async (req, res, next) => {
 
         try {
@@ -121,7 +150,7 @@ class TodoController {
                 return next(new HttpError('Задание не найдено', 404))
             }
 
-            if (todo.user !== req.user.id) {
+            if (todo.user.toString() !== req.user.userData.id) {
                 return next(new HttpError('У вас нет прав на изменение этой задачи', 401))
             }
 

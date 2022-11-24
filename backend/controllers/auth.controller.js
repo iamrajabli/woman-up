@@ -25,13 +25,12 @@ class AuthController {
             // Создаем, если такого пользователя нет в базе данных
             const newUser = await UserModel.create(req.body);
 
+
             // Фильтр пользовательских данных
             const userDto = new UserDto(newUser);
 
             // Отправка ответа пользователю
-            ResponseService.createResponseAndCookie(res, {
-                user: userDto,
-            });
+            ResponseService.createResponseAndCookie(res, userDto);
 
         } catch (e) {
             // Получаем возвращенную ошибку
@@ -63,13 +62,12 @@ class AuthController {
                 throw new HttpError(404, 'Не верный логин или пароль.')
             }
 
+
             // Фильтр пользовательских данных
             const userDto = new UserDto(user)
 
             // Отправка ответа пользователю
-            ResponseService.createResponseAndCookie(res, {
-                user: userDto,
-            });
+            ResponseService.createResponseAndCookie(res, userDto);
 
         } catch (e) {
             // Получаем возвращенную ошибку

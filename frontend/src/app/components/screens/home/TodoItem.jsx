@@ -1,14 +1,14 @@
-import React, { useContext, useState } from 'react';
+import { useContext, useState } from 'react';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { TodosContext } from '../../../contexts/TodosProvider';
 
-const TodoItem = ({ data: { _id, title, description, deadline, status } }) => {
-
+const TodoItem = ({ data: { _id, title, description, deadline, status, file } }) => {
     const [className, setClassname] = useState('');
 
     const { setUpdatedId, setMode, deleteTodo, expireTodo } = useContext(TodosContext);
 
+    // кастомный дедлайн
     const customDeadline = useMemo(() => {
 
         if (deadline.indexOf('T') !== -1) {
@@ -19,7 +19,7 @@ const TodoItem = ({ data: { _id, title, description, deadline, status } }) => {
 
     }, [deadline]);
 
-
+    // определим класс для статуса
     const customStatus = useMemo(() => {
         switch (status) {
             case 'done':
@@ -34,11 +34,24 @@ const TodoItem = ({ data: { _id, title, description, deadline, status } }) => {
         }
     }, [deadline, status, setUpdatedId, setMode]);
 
+    // определяем класс для бутога
+    const buttonClassName = useMemo(() => {
+
+        let className = 'p-3 text-primaryBg '
+        if (status === 'expired' || status === 'done') {
+            className += ' bg-gray-500'
+        } else {
+            className += ' bg-primaryText'
+        }
+
+        return className;
+    }, [status])
 
     useEffect(() => {
         deadlineControl()
     }, [deadline, status])
 
+    // посчитать сколько осталось дней до дедлайна
     const deadlineControl = () => {
         const date = new Date(deadline);
         const now = new Date();
@@ -51,6 +64,11 @@ const TodoItem = ({ data: { _id, title, description, deadline, status } }) => {
     return (
         <div className="flex flex-col gap-3">
             <div className="flex justify-between items-center border border-gray-300 p-3">
+
+                <div className='w-[200px] h-[200px]'>
+                    <img className='w-full h-full object-cover' src={file?.url || 'https://bit.ly/3AH0p2z'} alt="" />
+                </div>
+
                 <div className="flex flex-col gap-3">
                     <h3 className='text-xl'>{title}</h3>
                     <p className='text-sm'>{description}</p>
@@ -61,14 +79,16 @@ const TodoItem = ({ data: { _id, title, description, deadline, status } }) => {
 
                     </div>
                 </div>
+
+
                 <div className="flex gap-3">
                     <button
                         onClick={() => {
                             setUpdatedId(_id);
                             setMode('edit');
                         }}
-                        disabled={status === 'expired'}
-                        className={`p-3 text-primaryBg ${status === 'expired' ? 'bg-gray-500' : 'bg-primaryText'}`}>Редактировать</button>
+                        disabled={status === 'expired' || status === 'done'}
+                        className={buttonClassName}>Редактировать</button>
                     <button onClick={() => deleteTodo(_id)} className='p-3 bg-primaryText text-primaryBg'>Удалить</button>
                 </div>
             </div>

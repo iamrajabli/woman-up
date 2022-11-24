@@ -1,9 +1,21 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-const Alert = ({ text }) => {
+const Alert = ({ type, text }) => {
+
+    const classType = useMemo(() => {
+        switch (type) {
+            case 'danger':
+                return 'bg-red-500';
+            case 'success':
+                return 'bg-green-500';
+            default:
+                return 'bg-yellow-500';
+        }
+    }, [type])
+
     return (
         <div>
-            <p className='bg-yellow-300 p-2 mb-4'>
+            <p className={'p-2 mb-4 font-bold ' + classType}>
                 {text}
             </p>
         </div>

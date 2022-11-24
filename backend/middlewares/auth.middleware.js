@@ -13,6 +13,7 @@ module.exports = (req, res, next) => {
 
         try {
             const userData = jwt.verify(accessToken, process.env.JWT_ACCESS_SECRET);
+
             req.user = userData;
         } catch (error) {
             throw new HttpError(404, 'Не валидный токен.');

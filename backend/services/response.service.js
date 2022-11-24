@@ -6,8 +6,8 @@ module.exports = class ResponseService {
         // Создание access токена
         const { JWT_ACCESS_SECRET } = process.env;
 
-        const accessToken = jwt.sign({ ...userData }, JWT_ACCESS_SECRET, {
-            expiresIn: '200m'
+        const accessToken = jwt.sign({ userData }, JWT_ACCESS_SECRET, {
+            expiresIn: '20m'
         });
 
         res
@@ -16,7 +16,7 @@ module.exports = class ResponseService {
                 maxAge: 1000 * 60 * 10,
                 httpOnly: true
             })
-            .send({
+            .json({
                 success: true,
                 accessToken,
                 ...userData

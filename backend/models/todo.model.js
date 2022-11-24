@@ -25,6 +25,15 @@ const todoSchema = new Schema({
         default: 'in_process'
     },
 
+    file: {
+        public_id: {
+            type: String,
+        },
+        url: {
+            type: String,
+        }
+    },
+
     user: {
         type: Schema.Types.ObjectId,
         ref: 'User'

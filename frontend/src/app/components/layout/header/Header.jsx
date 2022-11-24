@@ -38,7 +38,7 @@ const Header = () => {
                     <ul className='flex gap-20'>
 
                         {auth && <>
-                            <li>{auth.user.email}</li>
+                            <li>{auth.email}</li>
                             <NavLink
                                 className='font-medium text-primaryText'
                                 style={(navClass) => (navClass.isActive ? activeStyle : undefined)}
